@@ -1,6 +1,7 @@
 import User from '../models/User';
 import jwt from 'jwt-simple';
 import dotEnv from 'dotenv';
+// import { use } from 'passport';
 dotEnv.config();
 
 const login = async (req, res, next) => {
@@ -23,56 +24,70 @@ const login = async (req, res, next) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            error: `Error Getting Toy Cars: ${error.message}`
+            error: `Error Logged in failed: ${error.message}`
 
         })
     }
 }
+const getAllUsers = async (req, res, next) => {
+    try {
+        const user = await User.find();
 
-// exports.getToyCarById = async (req, res, next) => {
-//     try {
-//         const toyCar = await ToyCar.findById(req.params.id);
-//         if (!toyCar) {
-//             return res.status(404).json( {
-//                 success: false,
-//                 error: 'Toy Car Not Found'
-//             })
-//         }
-//         return res.status(200).json({
-//             success: true,
-//             data: toyCar
-//         })
-//     } catch (error) {
-//         return res.status(500).json({
-//             success: false,
-//             error: `Error Getting Toy Car ${req.params.id}: ${error.message}`
-//         })
-//     }
-// }
+        return res.status(200).json({
+            success: true,
+            data: user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: `Error Getting all users: ${error.message}`
+        })
+    }
+}
 
-// exports.updateToyCar = async (req, res, next) => {
-//     try {
-//         const toyCar = await ToyCar.findById(req.params.id).exec();
-//         if (!toyCar) {
-//             return res.status(404).json( {
-//                 success: false,
-//                 error: 'Toy Car Not Found'
-//             })
-//         }
-//         console.log(req.body)
-//         toyCar.set(req.body);
-//         var update = await toyCar.save();
-//         return res.status(200).json({
-//             success: true,
-//             data: update
-//         })
-//     } catch (error) {
-//         return res.status(500).json({
-//             success: false,
-//             error: `Error Getting Toy Car ${req.params.id}: ${error.message}`
-//         })
-//     }
-// }
+const getUserById = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params._id);
+        if (!user) {
+            return res.status(404).json( {
+                success: false,
+                error: 'user Not Found'
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            data: user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: `Error Getting user ${req.params.id}: ${error.message}`
+        })
+    }
+}
+const updateUser = async (req, res, next) => {
+    try {
+        const User = await user.findById(req.params.id).exec();
+        if (!user) {
+            return res.status(404).json( {
+                success: false,
+                error: 'user Not updated'
+            })
+        }
+        console.log(req.body)
+        user.set(req.body);
+        var update = await user.save();
+        return res.status(200).json({
+            success: true,
+            data: update
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: `Error Getting user ${req.params.id}: ${error.message}`
+        })
+    }
+}
 
 const addAdmin= async (req, res, next) => {
     try {
@@ -107,27 +122,27 @@ const addAdmin= async (req, res, next) => {
 
 }
 
-// exports.deleteToyCar = async (req, res, next) => {
-//     try {
-//         const toyCar = await ToyCar.findById(req.params.id);
-//         if (!toyCar) {
-//             return res.status(404).json( {
-//                 success: false,
-//                 error: 'Toy Car Not Found'
-//             })
-//         }
+const deleteUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json( {
+                success: false,
+                error: 'User Not Deleted'
+            })
+        }
 
-//         await toyCar.remove();
+        await user.remove();
 
-//         return res.status(200).json({
-//             success: true,
-//             data: {}
-//         })
-//     } catch (error) {
-//         return res.status(500).json({
-//             success: false,
-//             error: `Error Deleting Toy Car: ${error.message}`
-//         })
-//     }
-// }
-export {addAdmin, login}
+        return res.status(200).json({
+            success: true,
+            data: {}
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: `Error Deleting user : ${error.message}`
+        })
+    }
+}
+export {addAdmin, login, getAllUsers, getUserById, updateUser,deleteUser}

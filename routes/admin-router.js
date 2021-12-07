@@ -1,5 +1,5 @@
 import express from 'express';
-import {addAdmin, login} from '../controllers/admin-controller'
+import {addAdmin, login, getAllUsers, getUserById,updateUser,deleteUser}  from '../controllers/admin-controller'
 
 import verifyToken from '../middlewares/verifyToken';
 
@@ -15,5 +15,11 @@ router.get('/', verifyToken, (req, res) => res.json({ message: "Welcome to Admin
 router.post('/add', addAdmin )
 
 router.post('/login',login )
+
+router.get('/admin', getAllUsers)
+
+router.get('/admin', getUserById)
+router.put('/admin', updateUser)
+router.delete('/admin', deleteUser)
 
 export default router;

@@ -1,10 +1,14 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+const router =  express.Router();
+import adminRoutes from './admin-router'
+import userRoutes  from './users-route'
 
 // Welcome Page
-router.get('/', (req, res) => res.render('index'));
+// router.get('/', (req, res) => res.json('index'));
 
 // Docs Welcome Page
-router.get('/docs', (req, res) => res.render('./docs/index'))
+router.get('/', (req, res) => res.json({message: "Welcome"}))
+router.use('/admin', adminRoutes)
+router.use('/user', userRoutes)
 
-module.exports = router;
+export default router

@@ -1,10 +1,11 @@
-const express = require('express');
-const expressLayouts = require('express-ejs-layouts');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const session = require('express-session');
-const path = require('path');
-const dotEnv = require('dotenv');
+import express from 'express';
+import expressLayouts from 'express-ejs-layouts';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import  session from 'express-session';
+import routes from './routes';
+import path  from 'path';
+import dotEnv from 'dotenv';
 dotEnv.config();
 
 
@@ -15,16 +16,16 @@ dotEnv.config();
 const app = express();
 
 //Set Up the Assets Folder
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport Config
 // require('./config/passport')(passport);
 
 // DB Config
-const db = require('./config/keys').MongoURI;
+// const db = require('./config/keys').MongoURI;
 
 // Db Connection from .env file
-// const db = process.env.MONGO_URI;
+const db = process.env.MONGO_URI;
 
 // Connect to MongoDB
 if (db !== '[YOUR CONNECTION STRING HERE]') {
@@ -59,9 +60,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.use('/', require('./routes/index.js'));
+app.use('/', routes);
 
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, console.log(`Server started on port ${PORT}`));
+
+// app.listen(PORT, console.log(`Server started on port ${PORT}`));
+app.listen(PORT, process.env.HOST || '0.0.0.0', () => {
+  console.info(`Server started on port ${PORT}`) // eslint-disable-line no-console
+  console.info(`Environment: ${ process.env.NODE_ENV }`) // eslint-disable-line no-console
+})

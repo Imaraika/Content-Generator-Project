@@ -4,9 +4,9 @@
     "description": "A template to quick start either MERN or MEAN apps",
     "main": "index.js",
     "type": "module",
-
-
-
+    "engines": {
+        "node": "14.18.1"
+      },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon --exec node --experimental-specifier-resolution=node ./index.js"

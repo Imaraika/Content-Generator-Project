@@ -1,5 +1,5 @@
 import express from 'express';
-import addUser from '../controllers/user-controller'
+import userLogin from '../controllers/user-controller'
 import verifyToken from '../middlewares/verifyToken';
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const router = express.Router();
 // Docs Welcome Page
 router.get('/', (req, res) => res.json({ message: "Welcome to Sign UP. Try /user/add"}))
 
-router.post('/add', verifyToken, addUser )
+router.post('/login', userLogin )
 
 export default router;

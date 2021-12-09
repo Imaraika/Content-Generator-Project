@@ -65,39 +65,31 @@ dotEnv.config();
 //     }
 // }
 
-const addUser = async (req, res, next) => {
+const userLogin = async (req, res, next) => {
     try {
-        const { email, username, password} = req.body;
-        var payload = { password }
-        var secret = process.env.SECRET_KEY
-        var token = jwt.encode(payload, secret);
-        var role = "user";
-    
-        const user = await User.create({ email,username,password:token, role});
-        return res.status(201).json({
+        const {email, password} = req.body;
+        const user = await User.find({email: {$in: [email]}});
+        console.log(user);
+        var decode = jwt.decode(user[0].password, process.env.SECRET_KEY);
+        if (password === decode.password)
+        {
+            var payload = {userId: user[0]._id, role: user[0].role};
+            var secret = process.env.SECRET_KEY;
+            var token = jwt.encode(payload, secret);
+                    }
+        return res.status(200).json({
             success: true,
-            data: user
+            token
         })
     } catch (error) {
-        console.log(req);
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: `Error Logged in failed: ${error.message}`
 
-        if(error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            
-            return res.status(400).json({
-                success: false,
-                error: messages
-            })
-        } else {
-            return res.status(500).json({
-                success: false,
-                error: `Error Adding Toy Car: ${error.message}`
-            })
-        }
+        })
     }
-
 }
-
 // exports.deleteToyCar = async (req, res, next) => {
 //     try {
 //         const toyCar = await ToyCar.findById(req.params.id);
@@ -121,4 +113,4 @@ const addUser = async (req, res, next) => {
 //         })
 //     }
 // }
-export default addUser;
+export default userLogin;

@@ -47,7 +47,8 @@ const getAllUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
     try {
-        const user = await User.findById(req.params._id);
+        const user = await User.findById(req.query.id)
+        console.log(req.query);
         if (!user) {
             return res.status(404).json( {
                 success: false,
@@ -65,9 +66,10 @@ const getUserById = async (req, res, next) => {
         })
     }
 }
+
 const updateUser = async (req, res, next) => {
     try {
-        const User = await user.findById(req.params.id).exec();
+        const user = await User.findById(req.query.id)
         if (!user) {
             return res.status(404).json( {
                 success: false,
@@ -75,7 +77,15 @@ const updateUser = async (req, res, next) => {
             })
         }
         console.log(req.body)
-        user.set(req.body);
+        if (req.body.username) {
+
+        user.set({username: req.body.username});
+        }
+        if (req.body.password)
+        {
+        const hash = jwt.encode({password: req.body.password}, process.env.SECRET_KEY)
+        user.set({password:hash})
+        }
         var update = await user.save();
         return res.status(200).json({
             success: true,
@@ -121,10 +131,43 @@ const addAdmin= async (req, res, next) => {
     }
 
 }
+const addUser = async (req, res, next) => {
+    try {
+        const { email, username, password} = req.body;
+        var payload = { password }
+        var secret = process.env.SECRET_KEY
+        var token = jwt.encode(payload, secret);
+        var role = "user";
+    
+        const user = await User.create({ email,username,password:token, role});
+        return res.status(201).json({
+            success: true,
+            data: user
+        })
+    } catch (error) {
+        console.log(req);
+
+        if(error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            
+            return res.status(400).json({
+                success: false,
+                error: messages
+            })
+        } else {
+            return res.status(500).json({
+                success: false,
+                error: `Error Adding Toy Car: ${error.message}`
+            })
+        }
+    }
+
+}
+
 
 const deleteUser = async (req, res, next) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.query.id);
         if (!user) {
             return res.status(404).json( {
                 success: false,
@@ -145,4 +188,4 @@ const deleteUser = async (req, res, next) => {
         })
     }
 }
-export {addAdmin, login, getAllUsers, getUserById, updateUser,deleteUser}
+export {addAdmin, addUser, login, getAllUsers, getUserById, updateUser,deleteUser}

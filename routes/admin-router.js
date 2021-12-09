@@ -1,5 +1,5 @@
 import express from 'express';
-import {addAdmin, login, getAllUsers, getUserById,updateUser,deleteUser}  from '../controllers/admin-controller'
+import {addAdmin, login, getAllUsers, getUserById,updateUser,deleteUser, addUser}  from '../controllers/admin-controller'
 
 import verifyToken from '../middlewares/verifyToken';
 
@@ -12,14 +12,15 @@ const router = express.Router();
 // Docs Welcome Page
 router.get('/', verifyToken, (req, res) => res.json({ message: "Welcome to Admin Dashbnord."}))
 
-router.post('/add', addAdmin )
+router.post('/addAdmin', verifyToken, addAdmin )
+router.post('/addUser', verifyToken, addUser )
 
 router.post('/login',login )
 
-router.get('/admin', getAllUsers)
+router.get('/getAll', verifyToken, getAllUsers)
 
-router.get('/admin', getUserById)
-router.put('/admin', updateUser)
-router.delete('/admin', deleteUser)
+router.get('/getOne', verifyToken, getUserById)
+router.put('/updateUser', verifyToken, updateUser)
+router.delete('/deleteUser',verifyToken, deleteUser)
 
 export default router;
